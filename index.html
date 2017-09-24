@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>CheckMate: A chess website</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/checkmate/css/chessboard-0.3.0.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/checkmate/css/style.css">
+    <link rel="shortcut icon" href="/checkmate/img/favicon.png">
+</head>
+
+<body>
+    <div>
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <h1 id="title" class="glow"><a href=""><span class="glyphicon glyphicon-knight" aria-hidden="true"></span>  CheckMate</a></h1>
+            </div>
+        </nav>
+    </div>
+    <div class="container" id="page">
+        <div id="board" style="width: 500px; float: left; margin-left: 50px;"></div>
+        <div id="sidebar" style="display: none">
+            <h3>Current Game</h3>
+            <div id="pgn-div">
+                <h4>Game Moves:</h4>
+                <h5 id="pgn"></h5>
+            </div>
+            <div id="sidebar-info">
+                <h4 id="playing-against"></h4>
+                <h4 id="computer-level"></h4>
+            </div>
+            <div id="sidebar-btn">
+                <button type="button" title="New Game" id="NewGameBtn" class="btn btn-success btn-lg" data-toggle="modal" data-target="#NewGameModal"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+                <button type="button" title="Hint" id="HintBtn" class="btn btn-warning btn-lg "><span class="glyphicon glyphicon-flash" aria-hidden="true"></span></button>
+                <button type="button" title="Undo" id="UndoBtn" class="btn btn-danger btn-lg"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>
+            </div>
+        </div>
+        <div id="NewGameModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">New Game</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div>
+                            <label>Chose Color:</label>
+                            <div class="btn-group" data-toggle="buttons">
+                                <label class="btn btn-primary active" id="color-white"><input type="radio" name="color">White</label>
+                                <label class="btn btn-primary" id="color-black"><input type="radio" name="color">Black</label>
+                            </div>
+                        </div>
+                        <div id="toggle-levels">
+                            <label>Choose Level:</label>
+                            <div class="btn-group" data-toggle="buttons">
+                                <label class="btn btn-primary" id="easy"><input type="radio" name="color">Easy</label>
+                                <label class="btn btn-primary active" id="normal"><input type="radio" name="color">Normal</label>
+                                <label class="btn btn-primary" id="hard"><input type="radio" name="color">Hard</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="PlayBtn" data-dismiss="modal" class="btn btn-success btn-lg">Play</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="GameOver" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h3 class="modal-title" id="gameover-title"></h3>
+                        <label></label>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="PlayAfterGameOverBtn" class="btn btn-success btn-lg">Play Again</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="hintsUsedUp" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h3 class="modal-title"></h3>
+                        <h3>You can only use up to three hints per game.</h3>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" data-dismiss="modal" class="btn btn-success btn-lg">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="PromotePawnModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Promote Pawn</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div id="toggle-promotion">
+                            <label>Choose Piece:</label>
+                            <div class="btn-group" data-toggle="buttons">
+                                <label class="btn btn-primary active" id="queen"><input type="radio" name="color">Queen</label>
+                                <label class="btn btn-primary" id="rook"><input type="radio" name="color">Rook</label>
+                                <label class="btn btn-primary" id="bishop"><input type="radio" name="color">Bishop</label>
+                                <label class="btn btn-primary" id="knight"><input type="radio" name="color">Knight</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="PromoteBtn" data-dismiss="modal" class="btn btn-success btn-lg">Select</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="main">
+            <h2>Play chess against a powerful chess engine!</h2>
+            <button style="margin-top: 50px;" type="button" id="StartBtn" class="btn btn-success btn-lg" data-toggle="modal" data-target="#NewGameModal">New Game</button>
+        </div>
+        <div id="main-info">
+            <h2>About</h2>
+            <div style="display: inline-block; width:500px;">
+                <h4>Chess is loved by players all over the world. It is the most beloved board game! Chess improves strategic
+                    thinking, problem solving skills, and also improves the part of the brain that helps visualise objects.
+                </h4>
+            </div>
+            <img style="display: inline-block; margin-left: 70px;" width="125px" src="/checkmate/img/checkmate.jpg">
+            <div style="display: inline-block; width:500px;">
+                <h4>CheckMate uses stockfish, a powerful chess engine. It is one of the most, if not the most, popular chess
+                    engines. Since stockfish is integrated into CheckMate, players can improve fast, and turn into exceptional
+                    chess players!</h4>
+            </div>
+            <img style="display: inline-block; margin-left: 40px;" width="200px" src="/checkmate/img/stockfish.png">
+            <div style="display: inline-block; width:500px;">
+                <h4>CheckMate was created by Yash Patel, a 14 year-old programmer.</h4>
+            </div>
+        </div>
+    </div>
+    <div id="main-footer">
+            <h5>CheckMate &copy; 2017 All Rights Reserved</h5>
+    </div>
+    <script src="/checkmate/js/chessboard-0.3.0.min.js"></script>
+    <script src="/checkmate/js/chess.min.js"></script>
+    <script src="/checkmate/js/game.js"></script>
+</body>
+
+</html>
