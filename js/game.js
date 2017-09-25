@@ -13,10 +13,6 @@ var promoteTo = 'q';
 var stockfish = new Worker('/checkmate/js/stockfish.js');
 
 var CheckIfGameEnded = function () {
-  $("#pgn").html(game.pgn({
-    max_width: 5,
-    newline_char: '<br />'
-  }));
   $("#pgn").scrollTop($('#pgn-div').prop('scrollHeight'));
   var turn = game.turn() == 'w' ? 'white' : 'black';
   if (turn === "white") {
@@ -229,6 +225,10 @@ function UpdateBoard(move, source, target, turn, newPos, oldPos, orientation, pi
   var boardPosition = ChessBoard.objToFen(newPos);
   var OldPosition = ChessBoard.objToFen(oldPos);
   window.setTimeout(makeMove(OldPosition, source, target), 250);
+  $("#pgn").html(game.pgn({
+    max_width: 5,
+    newline_char: '<br />'
+  }));
 };
 
 $("#toggle-levels label").click(function (e) {
