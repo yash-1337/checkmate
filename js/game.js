@@ -12,7 +12,7 @@ var promoteTo = 'q';
 
 var stockfish = new Worker('/checkmate/js/stockfish.js');
 
-var CheckIfGameEnded = function () {
+var CheckIfGameEnded = function() {
   UpdateGameMoves();
   $("#pgn").scrollTop($('#pgn-div').prop('scrollHeight'));
   var turn = game.turn() == 'w' ? 'white' : 'black';
@@ -39,16 +39,16 @@ var CheckIfGameEnded = function () {
 
 };
 
-var removeHighlights = function (color) {
+var removeHighlights = function(color) {
   boardEl.find('.square-55d63')
     .removeClass('highlight-' + color);
 };
 
-var removeGreySquares = function () {
+var removeGreySquares = function() {
   $('#board .square-55d63').css('background', '');
 };
 
-var greySquare = function (square) {
+var greySquare = function(square) {
   var squareEl = $('#board .square-' + square);
 
   var background = '#a9a9a9';
@@ -59,7 +59,7 @@ var greySquare = function (square) {
   squareEl.css('background', background);
 };
 
-var onDragStart = function (source, piece, position, orientation) {
+var onDragStart = function(source, piece, position, orientation) {
   var re = player == 'white' ? /^b/ : /^w/
   if (game.in_checkmate() === true || game.in_draw() === true ||
     piece.search(re) !== -1) {
@@ -67,7 +67,7 @@ var onDragStart = function (source, piece, position, orientation) {
   }
 };
 
-var makeMove = function (oldPos, source, target) {
+var makeMove = function(oldPos, source, target) {
 
   var turn = game.turn() == 'w' ? 'white' : 'black';
 
@@ -85,7 +85,7 @@ var makeMove = function (oldPos, source, target) {
     stockfish.postMessage('position startpos moves' + moves);
     console.log('position startpos moves' + moves);
     stockfish.postMessage('go depth 7');
-    stockfish.onmessage = function (event) {
+    stockfish.onmessage = function(event) {
       var result = event.data;
       var match = result.match(/^bestmove ([a-h][1-8])([a-h][1-8])([qrbk])?/);
       console.log(match);
@@ -116,7 +116,7 @@ var makeMove = function (oldPos, source, target) {
 
 };
 
-var onDrop = function (source, target, piece, newPos, oldPos, orientation) {
+var onDrop = function(source, target, piece, newPos, oldPos, orientation) {
   var turn = game.turn() == 'w' ? 'white' : 'black';
   removeGreySquares();
 
@@ -125,7 +125,7 @@ var onDrop = function (source, target, piece, newPos, oldPos, orientation) {
   if (game.is_promotion(source, target)) {
     //var promote = prompt("piece:", "q");
     $('#PromotePawnModal').modal('show');
-    $('#PromotePawnModal').on('hidden.bs.modal', function (e) {
+    $('#PromotePawnModal').on('hidden.bs.modal', function(e) {
       move = game.move({
         from: source,
         to: target,
@@ -148,9 +148,9 @@ var onDrop = function (source, target, piece, newPos, oldPos, orientation) {
 
 };
 
-var onMoveEnd = function () {};
+var onMoveEnd = function() {};
 
-var onMouseoverSquare = function (square, piece) {
+var onMouseoverSquare = function(square, piece) {
   // get list of possible moves for this square
   var moves = game.moves({
     square: square,
@@ -169,18 +169,18 @@ var onMouseoverSquare = function (square, piece) {
   }
 };
 
-var onMouseoutSquare = function (square, piece) {
+var onMouseoutSquare = function(square, piece) {
   removeGreySquares();
 };
 
 
 // update the board position after the piece snap
 // for castling, en passant, pawn promotion
-var onSnapEnd = function () {
+var onSnapEnd = function() {
   board.position(game.fen());
 };
 
-$("#toggle-promotion label").click(function (e) {
+$("#toggle-promotion label").click(function(e) {
   switch (this.id) {
     case 'queen':
       promoteTo = 'q';
@@ -236,7 +236,7 @@ function UpdateGameMoves() {
   }));
 };
 
-$("#toggle-levels label").click(function (e) {
+$("#toggle-levels label").click(function(e) {
   switch (this.id) {
     case 'easy':
       skillLevel = 1;
@@ -255,7 +255,7 @@ $("#toggle-levels label").click(function (e) {
 
 });
 
-$('#PlayBtn').on('click', function () {
+$('#PlayBtn').on('click', function() {
   player = $('#color-white').hasClass('active') ? 'white' : 'black';
   stockfish.postMessage('setoption name Skill Level value ' + skillLevel);
   var cfg = {
@@ -290,7 +290,7 @@ $('#PlayBtn').on('click', function () {
   window.setTimeout(makeMove, 250);
 });
 
-$('#UndoBtn').on('click', function () {
+$('#UndoBtn').on('click', function() {
   game.undo();
   removeHighlights('last');
   removeHighlights('hint');
@@ -303,7 +303,7 @@ $('#UndoBtn').on('click', function () {
   UpdateGameMoves();
 });
 
-$('#HintBtn').on('click', function () {
+$('#HintBtn').on('click', function() {
   if (!game.in_checkmate() || !game.in_draw()) {
     if (hintsUsed > 2) {
       $('#hintsUsedUp').modal();
@@ -324,7 +324,7 @@ $('#HintBtn').on('click', function () {
         stockfish.postMessage('position startpos moves' + moves);
         console.log('position startpos moves' + moves);
         stockfish.postMessage('go depth 7');
-        stockfish.onmessage = function (event) {
+        stockfish.onmessage = function(event) {
           var result = event.data;
           var match = result.match(/^bestmove ([a-h][1-8])([a-h][1-8])([qrbk])?/);
           console.log(match);
@@ -343,7 +343,7 @@ $('#HintBtn').on('click', function () {
 });
 
 
-$('#PlayAfterGameOverBtn').on('click', function () {
+$('#PlayAfterGameOverBtn').on('click', function() {
   $('#GameOver').modal('hide');
   $('#NewGameModal').modal('show');
 });
